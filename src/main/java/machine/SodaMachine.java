@@ -8,8 +8,9 @@ import state.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
-public class SodaMachine implements ISodaMachine{
+public class SodaMachine implements ISodaMachine {
     private Item<Product> products = new Item<>();
     private Item<Coin> coins = new Item<>();
     private State noCoinInserted;
@@ -32,21 +33,21 @@ public class SodaMachine implements ISodaMachine{
         productSelected = new ProductSelected(this);
         productSold = new ProductSold(this);
         soldOut = new SoldOut(this);
-        if(products.getSize() > 0){
+        if (products.getSize() > 0) {
             currentState = noCoinInserted;
         }
     }
 
-    public void init(){
+    public void init() {
         products.put(Product.COKE, 4);
         products.put(Product.PEPSI, 10);
         products.put(Product.SODA, 8);
     }
 
-    private void showProductAvaiable(){
-        for(Product product : products.getItems().keySet()){
+    private void showProductAvaiable() {
+        for (Product product : products.getItems().keySet()) {
             int quantity = products.getItems().get(product);
-            System.out.println(product.getName() + " --- price: "+product.getPrice() +" --- quantity: " + quantity);
+            System.out.println(product.getName() + " --- price: " + product.getPrice() + " --- quantity: " + quantity);
         }
     }
 
@@ -66,54 +67,62 @@ public class SodaMachine implements ISodaMachine{
     }
 
     @Override
-    public void releaseProductAndRemainingChange() {
+    public Map<Product, Integer> releaseProductAndRemainingChange() {
         currentState.releaseProductAndRemainingChange();
+        return currentState.dispense();
     }
 
-    // Máy hỗ trợ release sản phẩm và tính lại số lượng
-    public Product releaseProduct(){
+    // Release sản phẩm và tính lại số lượng
+    public Product releaseProduct() {
         return products.take(currentProduct);
     }
-    // Máy hỗ trợ release coin cho người dùng và tính lại coin trong máy
-    public int getChangeAndCalCoinInMachine(){
-        List<Coin> change = new ArrayList<>();
-        int mount = 0;
-        while (balance > 0 && mount < currentProduct.getPrice() ){
-            if(balance >= Coin.TEN.getCoin() && coins.hasItem(Coin.TEN)){
-                balance -= Coin.TEN.getCoin();
-                coins.take(Coin.TEN);
-                change.add(Coin.TEN);
-            }else if(balance >= Coin.TWENTY.getCoin() && coins.hasItem(Coin.TWENTY)){
-                balance -= Coin.TWENTY.getCoin();
-                coins.take(Coin.TWENTY);
-                change.add(Coin.TWENTY);
-            } else if(balance >= Coin.FIFTY.getCoin() && coins.hasItem(Coin.FIFTY)) {
-                balance -= Coin.FIFTY.getCoin();
-                coins.take(Coin.FIFTY);
-                change.add(Coin.FIFTY);
-            } else if(balance >= Coin.ONE_HUNDRED.getCoin() && coins.hasItem(Coin.ONE_HUNDRED)) {
-                balance -= Coin.ONE_HUNDRED.getCoin();
-                coins.take(Coin.ONE_HUNDRED);
-                change.add(Coin.ONE_HUNDRED);
-            } else if(balance >= Coin.TWO_HUNDRED.getCoin() && coins.hasItem(Coin.TWO_HUNDRED)) {
-                balance -= Coin.TWO_HUNDRED.getCoin();
-                coins.take(Coin.TWO_HUNDRED);
-                change.add(Coin.TWO_HUNDRED);
-            }
-            if(balance > 0 && coins.getSize() == 0){
-                throw new NoSufficientChangeException();
+
+    // Release coin cho người dùng và tính lại coin trong máy
+    public int getChangeAndCalCoinInMachine() {
+        int changeOfUser = balance - currentProduct.getPrice();
+        if (changeOfUser > 0) {
+            Coin coin = Coin.getCoin(changeOfUser);
+            if (coin != null && coins.hasItem(coin)) {
+                coins.take(coin);
+                return coin.getCoin();
             }
         }
-        calCoinInMachine(change);
-        return balance;
-    }
-
-    public void calCoinInMachine(List<Coin> change){
-        for(Coin coin: change){
-            coins.addItem(coin);
+        if (changeOfUser < 0) {
+            throw new NoSufficientChangeException();
         }
+//        while (balance > 0 && mount < currentProduct.getPrice()) {
+//            if (balance >= Coin.TEN.getCoin() && coins.hasItem(Coin.TEN)) {
+//                balance -= Coin.TEN.getCoin();
+//                mount += Coin.TEN.getCoin();
+//                coins.take(Coin.TEN);
+//                change.add(Coin.TEN);
+//            } else if (balance >= Coin.TWENTY.getCoin() && coins.hasItem(Coin.TWENTY)) {
+//                balance -= Coin.TWENTY.getCoin();
+//                mount += Coin.TWENTY.getCoin();
+//                coins.take(Coin.TWENTY);
+//                change.add(Coin.TWENTY);
+//            } else if (balance >= Coin.FIFTY.getCoin() && coins.hasItem(Coin.FIFTY)) {
+//                balance -= Coin.FIFTY.getCoin();
+//                mount += Coin.FIFTY.getCoin();
+//                coins.take(Coin.FIFTY);
+//                change.add(Coin.FIFTY);
+//            } else if (balance >= Coin.ONE_HUNDRED.getCoin() && coins.hasItem(Coin.ONE_HUNDRED)) {
+//                balance -= Coin.ONE_HUNDRED.getCoin();
+//                mount += Coin.ONE_HUNDRED.getCoin();
+//                coins.take(Coin.ONE_HUNDRED);
+//                change.add(Coin.ONE_HUNDRED);
+//            } else if (balance >= Coin.TWO_HUNDRED.getCoin() && coins.hasItem(Coin.TWO_HUNDRED)) {
+//                balance -= Coin.TWO_HUNDRED.getCoin();
+//                mount += Coin.TWO_HUNDRED.getCoin();
+//                coins.take(Coin.TWO_HUNDRED);
+//                change.add(Coin.TWO_HUNDRED);
+//            }
+//            if (balance > 0 && coins.getSize() == 0) {
+//                throw new NoSufficientChangeException();
+//            }
+//        }
+        return 0;
     }
-
 
     public Item<Product> getProducts() {
         return products;

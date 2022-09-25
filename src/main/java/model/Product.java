@@ -20,7 +20,7 @@ public enum Product {
         try{
             for(Product key : Product.values()){
                 if(key.getName().trim().equalsIgnoreCase(name)){
-                    product = Product.valueOf(name);
+                    product = key;
                 }
             }
         }catch (Exception e){
