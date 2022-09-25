@@ -15,16 +15,12 @@ public enum Product {
         this.price = price;
     }
 
-    public static Optional<Product> hasProduct(String name){
+    public static Optional<Product> getProduct(String name) {
         Product product = null;
-        try{
-            for(Product key : Product.values()){
-                if(key.getName().trim().equalsIgnoreCase(name)){
-                    product = key;
-                }
+        for (Product key : Product.values()) {
+            if (key.getName().trim().equalsIgnoreCase(name)) {
+                product = key;
             }
-        }catch (Exception e){
-            e.printStackTrace();
         }
         return Optional.ofNullable(product);
     }

@@ -5,6 +5,8 @@ import machine.SodaMachine;
 import model.Coin;
 import model.Product;
 
+import java.util.Optional;
+
 public class NoCoinInserted implements State {
     private SodaMachine sodaMachine;
 
@@ -14,11 +16,11 @@ public class NoCoinInserted implements State {
 
     @Override
     public void insertCoin(int coin) {
-        boolean checkCoin = Coin.hasCoin(coin);
-        if (!checkCoin) {
+        Optional<Coin> optionalCoin = Coin.getCoin(coin);
+        if (!optionalCoin.isPresent()) {
             throw new CoinValidateException();
         }
-        sodaMachine.getCoins().addItem(Coin.getCoin(coin));
+        sodaMachine.getCoins().addItem(optionalCoin.get());
         sodaMachine.setBalance(sodaMachine.getBalance() + coin);
         sodaMachine.setCurrentState(sodaMachine.getCoinInserted());
     }

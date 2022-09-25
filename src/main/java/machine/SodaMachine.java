@@ -9,6 +9,7 @@ import state.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class SodaMachine implements ISodaMachine {
     private Item<Product> products = new Item<>();
@@ -81,10 +82,10 @@ public class SodaMachine implements ISodaMachine {
     public int getChangeAndCalCoinInMachine() {
         int changeOfUser = balance - currentProduct.getPrice();
         if (changeOfUser > 0) {
-            Coin coin = Coin.getCoin(changeOfUser);
-            if (coin != null && coins.hasItem(coin)) {
-                coins.take(coin);
-                return coin.getCoin();
+            Optional<Coin> optionalCoin = Coin.getCoin(changeOfUser);
+            if (optionalCoin.isPresent() && coins.hasItem(optionalCoin.get())) {
+                coins.take(optionalCoin.get());
+                return optionalCoin.get().getCoin();
             }
         }
         if (changeOfUser < 0) {

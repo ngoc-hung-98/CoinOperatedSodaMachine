@@ -1,5 +1,7 @@
 package model;
 
+import java.util.Optional;
+
 public enum Coin {
     TEN(10000),
     TWENTY(20000),
@@ -12,26 +14,14 @@ public enum Coin {
         this.coin = coin;
     }
 
-    public static boolean hasCoin(int coin){
-        try{
-            for(Coin c : Coin.values()){
-                if(c.getCoin() == coin){
-                    return true;
-                }
-            }
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    public static Coin getCoin(int coin){
-        for(Coin c : Coin.values()){
-            if(c.getCoin() == coin){
-                return c;
+    public static Optional<Coin> getCoin(int coin) {
+        Coin c = null;
+        for (Coin key : Coin.values()) {
+            if (key.getCoin() == coin) {
+                 c = key;
             }
         }
-        return null;
+        return Optional.ofNullable(c);
     }
 
     public int getCoin() {

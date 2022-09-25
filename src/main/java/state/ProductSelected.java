@@ -6,7 +6,9 @@ import machine.SodaMachine;
 import model.Coin;
 import model.Product;
 
-public class ProductSelected implements State{
+import java.util.Optional;
+
+public class ProductSelected implements State {
     private SodaMachine sodaMachine;
 
     public ProductSelected(SodaMachine sodaMachine) {
@@ -15,11 +17,12 @@ public class ProductSelected implements State{
 
     @Override
     public void insertCoin(int coin) {
-            boolean checkCoin = Coin.hasCoin(coin);
-            if(!checkCoin){
-                throw new CoinValidateException();
-            }
-            sodaMachine.setBalance(sodaMachine.getBalance() + coin);
+        Optional<Coin> optionalCoin = Coin.getCoin(coin);
+        if (!optionalCoin.isPresent()) {
+            throw new CoinValidateException();
+        }
+        sodaMachine.getCoins().addItem(optionalCoin.get());
+        sodaMachine.setBalance(sodaMachine.getBalance() + coin);
     }
 
     @Override
@@ -30,17 +33,17 @@ public class ProductSelected implements State{
     @Override
     public void cancelRequest() {
 
-            sodaMachine.setBalance(0);
-            sodaMachine.setCurrentState(sodaMachine.getNoCoinInserted());
-            sodaMachine.setCurrentProduct(null);
+        sodaMachine.setBalance(0);
+        sodaMachine.setCurrentState(sodaMachine.getNoCoinInserted());
+        sodaMachine.setCurrentProduct(null);
 
     }
 
     @Override
     public void releaseProductAndRemainingChange() {
-        try{
+        try {
             sodaMachine.setCurrentState(sodaMachine.getProductSold());
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

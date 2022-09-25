@@ -19,18 +19,18 @@ public class CoinInserted implements State {
 
     @Override
     public void insertCoin(int coin) {
-        boolean checkCoin = Coin.hasCoin(coin);
-        if (!checkCoin) {
+        Optional<Coin> optionalCoin = Coin.getCoin(coin);
+        if (!optionalCoin.isPresent()) {
             throw new CoinValidateException();
         }
-        sodaMachine.getCoins().addItem(Coin.getCoin(coin));
+        sodaMachine.getCoins().addItem(optionalCoin.get());
         sodaMachine.setBalance(sodaMachine.getBalance() + coin);
 
     }
 
     @Override
     public void selectProduct(String name) {
-        Optional<Product> optionalProduct = Product.hasProduct(name);
+        Optional<Product> optionalProduct = Product.getProduct(name);
         if (!optionalProduct.isPresent()) {
             throw new ProductValidateException();
         }
