@@ -37,8 +37,8 @@ public class ProductSold implements State{
     }
 
     @Override
-    public Map<Product, Integer> dispense() {
-        Map<Product, Integer> items = new HashMap<>();
+    public Item<Product> dispense() {
+        Item<Product> items = new Item<>();
         int balance = sodaMachine.getChangeAndCalCoinInMachine();
         Product product = sodaMachine.releaseProduct();
         if(sodaMachine.getProducts().getSize() > 0){

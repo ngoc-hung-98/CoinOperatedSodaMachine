@@ -13,5 +13,5 @@ public interface State {
     void cancelRequest();
     void releaseProductAndRemainingChange();
 
-    default Map<Product, Integer> dispense(){return null;};// Tính toán lại số lượng sản phẩm
+    default Item<Product> dispense(){return null;};// Tính toán lại số lượng sản phẩm
 }

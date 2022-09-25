@@ -16,11 +16,11 @@ public class client {
         sodaMachine.insertCoin(20000);
         sodaMachine.insertCoin(10000);
         // Chọn mua Pepsi
-        sodaMachine.selectProduct("Pepsi");
+        sodaMachine.selectProduct("Coke");
         // Bắt đầu mua
-        Map<Product, Integer> map = sodaMachine.releaseProductAndRemainingChange();
+        Item<Product> map = sodaMachine.releaseProductAndRemainingChange();
         //Sau khi mua xong
-        System.out.println("Release sản phẩm và tiền thừa cho người dùng: "+map.keySet().iterator().next().getName()+" --- "+map.get(map.keySet().iterator().next()));
+        System.out.println("Release sản phẩm và tiền thừa cho người dùng: "+map.getItems().keySet().iterator().next().getName()+" --- "+map.getItems().get(map.getItems().keySet().iterator().next()));
         sodaMachine.selectProduct("Coke");
     }
 }

@@ -1,5 +1,6 @@
 package machine;
 
+import exception.NoFullPaidException;
 import exception.NoSufficientChangeException;
 import generic.Item;
 import model.Coin;
@@ -68,7 +69,7 @@ public class SodaMachine implements ISodaMachine {
     }
 
     @Override
-    public Map<Product, Integer> releaseProductAndRemainingChange() {
+    public Item<Product> releaseProductAndRemainingChange() {
         currentState.releaseProductAndRemainingChange();
         return currentState.dispense();
     }
@@ -89,39 +90,8 @@ public class SodaMachine implements ISodaMachine {
             }
         }
         if (changeOfUser < 0) {
-            throw new NoSufficientChangeException();
+            throw new NoFullPaidException();
         }
-//        while (balance > 0 && mount < currentProduct.getPrice()) {
-//            if (balance >= Coin.TEN.getCoin() && coins.hasItem(Coin.TEN)) {
-//                balance -= Coin.TEN.getCoin();
-//                mount += Coin.TEN.getCoin();
-//                coins.take(Coin.TEN);
-//                change.add(Coin.TEN);
-//            } else if (balance >= Coin.TWENTY.getCoin() && coins.hasItem(Coin.TWENTY)) {
-//                balance -= Coin.TWENTY.getCoin();
-//                mount += Coin.TWENTY.getCoin();
-//                coins.take(Coin.TWENTY);
-//                change.add(Coin.TWENTY);
-//            } else if (balance >= Coin.FIFTY.getCoin() && coins.hasItem(Coin.FIFTY)) {
-//                balance -= Coin.FIFTY.getCoin();
-//                mount += Coin.FIFTY.getCoin();
-//                coins.take(Coin.FIFTY);
-//                change.add(Coin.FIFTY);
-//            } else if (balance >= Coin.ONE_HUNDRED.getCoin() && coins.hasItem(Coin.ONE_HUNDRED)) {
-//                balance -= Coin.ONE_HUNDRED.getCoin();
-//                mount += Coin.ONE_HUNDRED.getCoin();
-//                coins.take(Coin.ONE_HUNDRED);
-//                change.add(Coin.ONE_HUNDRED);
-//            } else if (balance >= Coin.TWO_HUNDRED.getCoin() && coins.hasItem(Coin.TWO_HUNDRED)) {
-//                balance -= Coin.TWO_HUNDRED.getCoin();
-//                mount += Coin.TWO_HUNDRED.getCoin();
-//                coins.take(Coin.TWO_HUNDRED);
-//                change.add(Coin.TWO_HUNDRED);
-//            }
-//            if (balance > 0 && coins.getSize() == 0) {
-//                throw new NoSufficientChangeException();
-//            }
-//        }
         return 0;
     }
 

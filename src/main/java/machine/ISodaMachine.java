@@ -1,5 +1,6 @@
 package machine;
 
+import generic.Item;
 import model.Coin;
 import model.Product;
 
@@ -9,5 +10,5 @@ public interface ISodaMachine {
     void insertCoin(int coin);
     void selectProduct(String name);
     void cancelRequest();
-    Map<Product, Integer> releaseProductAndRemainingChange(); // key là sản phẩm và value là tiền thừa trả cho người dùng
+    Item<Product> releaseProductAndRemainingChange(); // key là sản phẩm và value là tiền thừa trả cho người dùng
 }
