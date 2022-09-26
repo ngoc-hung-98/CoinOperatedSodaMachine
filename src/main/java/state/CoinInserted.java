@@ -1,6 +1,7 @@
 package state;
 
 
+import exception.CancelException;
 import exception.CoinValidateException;
 import exception.ProductValidateException;
 import machine.SodaMachine;
@@ -23,8 +24,7 @@ public class CoinInserted implements State {
         if (!optionalCoin.isPresent()) {
             throw new CoinValidateException();
         }
-        sodaMachine.getCoins().addItem(optionalCoin.get());
-        sodaMachine.setBalance(sodaMachine.getBalance() + coin);
+        sodaMachine.getCoinUserInserted().add(coin);
 
     }
 
@@ -42,10 +42,10 @@ public class CoinInserted implements State {
     @Override
     public void cancelRequest() {
 
-        sodaMachine.setBalance(0);
+        sodaMachine.getCoinUserInserted().clear();
         sodaMachine.setCurrentState(sodaMachine.getNoCoinInserted());
         sodaMachine.setCurrentProduct(null);
-
+        throw new CancelException();
     }
 
     @Override

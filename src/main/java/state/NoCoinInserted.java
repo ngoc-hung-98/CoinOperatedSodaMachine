@@ -20,8 +20,7 @@ public class NoCoinInserted implements State {
         if (!optionalCoin.isPresent()) {
             throw new CoinValidateException();
         }
-        sodaMachine.getCoins().addItem(optionalCoin.get());
-        sodaMachine.setBalance(sodaMachine.getBalance() + coin);
+        sodaMachine.getCoinUserInserted().add(coin);
         sodaMachine.setCurrentState(sodaMachine.getCoinInserted());
     }
 

@@ -44,6 +44,10 @@ public class Item <T>{
         return items.size();
     }
 
+    public void clear(){
+        items.clear();
+    }
+
     public Map<T, Integer> getItems() {
         return items;
     }

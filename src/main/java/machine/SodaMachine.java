@@ -7,10 +7,7 @@ import model.Coin;
 import model.Product;
 import state.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class SodaMachine implements ISodaMachine {
     private Item<Product> products = new Item<>();
@@ -24,7 +21,7 @@ public class SodaMachine implements ISodaMachine {
 
     private Product currentProduct; // Sản phẩm người dùng muốn mua
 
-    private int balance; // tổng coin của người dùng insert vào máy
+    private List<Integer> coinUserInserted = new ArrayList<>(); // Coin của người dùng insert vào máy
 
     public SodaMachine() {
         init();
@@ -69,30 +66,30 @@ public class SodaMachine implements ISodaMachine {
     }
 
     @Override
-    public Item<Product> releaseProductAndRemainingChange() {
+    public Product releaseProductAndRemainingChange() {
         currentState.releaseProductAndRemainingChange();
         return currentState.dispense();
     }
 
-    // Release sản phẩm và tính lại số lượng
+    // Release sản phẩm cho người dùng và tính lại số lượng trong máy
     public Product releaseProduct() {
         return products.take(currentProduct);
     }
 
-    // Release coin cho người dùng và tính lại coin trong máy
-    public int getChangeAndCalCoinInMachine() {
-        int changeOfUser = balance - currentProduct.getPrice();
-        if (changeOfUser > 0) {
-            Optional<Coin> optionalCoin = Coin.getCoin(changeOfUser);
-            if (optionalCoin.isPresent() && coins.hasItem(optionalCoin.get())) {
-                coins.take(optionalCoin.get());
-                return optionalCoin.get().getCoin();
-            }
-        }
-        if (changeOfUser < 0) {
+    // Tính lại coin trong máy
+    public void calCoinInMachine() {
+        int count = coinUserInserted.stream().mapToInt(Integer::intValue).sum();
+        if(count < currentProduct.getPrice()){
             throw new NoFullPaidException();
+        } else {
+            calCoinInMachine(coinUserInserted);
         }
-        return 0;
+    }
+
+    public void calCoinInMachine(List<Integer> coins){
+        for(int coin : coins){
+            this.coins.addItem(Coin.getCoin(coin).get());
+        }
     }
 
     public Item<Product> getProducts() {
@@ -167,11 +164,11 @@ public class SodaMachine implements ISodaMachine {
         this.currentProduct = currentProduct;
     }
 
-    public int getBalance() {
-        return balance;
+    public List<Integer> getCoinUserInserted() {
+        return coinUserInserted;
     }
 
-    public void setBalance(int balance) {
-        this.balance = balance;
+    public void setCoinUserInserted(List<Integer> coinUserInserted) {
+        this.coinUserInserted = coinUserInserted;
     }
 }

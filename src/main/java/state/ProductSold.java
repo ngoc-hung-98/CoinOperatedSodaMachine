@@ -37,16 +37,15 @@ public class ProductSold implements State{
     }
 
     @Override
-    public Item<Product> dispense() {
-        Item<Product> items = new Item<>();
-        int balance = sodaMachine.getChangeAndCalCoinInMachine();
+    public Product dispense() {
+        sodaMachine.calCoinInMachine();
         Product product = sodaMachine.releaseProduct();
         if(sodaMachine.getProducts().getSize() > 0){
             sodaMachine.setCurrentState(sodaMachine.getNoCoinInserted());
         }else{
             sodaMachine.setCurrentState(sodaMachine.getSoldOut());
         }
-        items.put(product, balance);
-        return items;
+
+        return product;
     }
 }
